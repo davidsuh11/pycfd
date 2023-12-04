@@ -6,6 +6,8 @@ from numpy.linalg import norm
 import jax 
 import jax.numpy as jnp
 
+import torch 
+
 h = 3
 d = 2 # 3D 
 
@@ -69,6 +71,14 @@ def jlW_viscosity(r):
     ret = np.array(ret)
     ret[r < 1e-15] = 0 
     ret[r > h] = 0 
+    return ret
+
+def tW_poly6(r):
+    r = torch.from_numpy(r)
+    C = 315 / (64 * np.pi * np.power(h, 9)) 
+    ret = C * torch.pow(h*h - r*r, 3) 
+    ret[r > h] = 0
+
     return ret
 
 # def __jdW_spiky(r): 

@@ -11,6 +11,8 @@ from matplotlib.animation import FuncAnimation
 from os.path import join
 import time 
 
+import torch
+
 from . import kernel, calculations
 
 class SPHSimulation:
@@ -21,7 +23,8 @@ class SPHSimulation:
                  viscosity=0.2, 
                  sz=(20, 80),
                  backend='jax',
-                 h=3):
+                 h=3,
+                 device='cpu'):
         self.n_particles = n_particles
         self.dt = dt
         self.num_steps = num_steps
@@ -37,6 +40,8 @@ class SPHSimulation:
         self.pos = np.random.rand(*self.v.shape) * 15 + kernel.h + 1
         self.output_dir = 'output'
         calculations.BACKEND = backend
+        self.backend = backend
+        calculations.DEVICE = device
         kernel.h = h
 
     def step(self):
@@ -67,9 +72,10 @@ class SPHSimulation:
         # Update acceleration, vel, pos 
         forces = fp + fv + fe
         self.a = forces / d[:, None] 
+        self.a = np.array(self.a)
         self.v = self.v + self.a * self.dt 
         self.pos = self.pos + self.v * self.dt 
-
+        
         # Boundary conditions 
         sz = self.sz
         xlim = (kernel.h, sz[0] - kernel.h) 
@@ -78,14 +84,24 @@ class SPHSimulation:
         hit_right = self.pos[:, 0] > xlim[1]
         hit_top = self.pos[:, 1] > ylim[1]
         hit_bottom =self.pos[:, 1] < ylim[0]
+
+        self.v = np.array(self.v)
+        self.pos = np.array(self.pos)
+        self.a = np.array(self.a)
         
         self.v[np.logical_or(hit_left, hit_right), 0] *= -0.6 
+        #self.v = calculations.where(np.logical_or(hit_left, hit_right), self.v[:, 0], self.v[:, 0] * -0.6)
         self.pos[hit_left, 0] = xlim[0]  
+        #self.pos = calculations.where(hit_left, self.pos[:, 0], xlim[0])
         self.pos[hit_right, 0] = xlim[1] 
+        #self.pos = calculations.where(hit_right, self.pos[:, 0], xlim[1])
 
         self.v[np.logical_or(hit_top, hit_bottom), 1] *= -0.6 
+        #calculations.where(np.logical_or(hit_top, hit_bottom), self.v[:, 1], self.v[:, 1] * -0.6)
         self.pos[hit_top, 1] = ylim[1] 
+        #calculations.where(hit_top, self.pos[:, 1], ylim[1])
         self.pos[hit_bottom, 1] = ylim[0]
+        #calculations.where(hit_bottom, self.pos[:, 1], ylim[0])
 
         self.hist.append(self.pos) 
     
