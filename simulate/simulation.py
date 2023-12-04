@@ -13,7 +13,7 @@ import time
 
 import torch
 
-from . import kernel, calculations
+from . import kernel, calculations, operations
 
 class SPHSimulation:
     def __init__(self, n_particles=100, 
@@ -40,6 +40,7 @@ class SPHSimulation:
         self.pos = np.random.rand(*self.v.shape) * 15 + kernel.h + 1
         self.output_dir = 'output'
         calculations.BACKEND = backend
+        operations.BACKEND = backend
         self.backend = backend
         calculations.DEVICE = device
         kernel.h = h
@@ -53,7 +54,7 @@ class SPHSimulation:
         fv = np.zeros_like(self.a)
         fe = np.tile([0, -1], (self.n_particles, 1))  
 
-        dist = sp.spatial.distance.cdist(self.pos, self.pos)  
+        dist = operations.cdist(self.pos, self.pos)  
 
         d = calculations.calculate_density(dist, self.mass)
         # Update the pressure value 
@@ -62,12 +63,12 @@ class SPHSimulation:
         # Update the pressure force value 
         dW_spiky_dist = kernel.dW_spiky(dist)
         fp = calculations.calculate_pressure_force(self.pos, p, d, self.mass, dW_spiky_dist)
-        t4 = time.time()
+
 
         # Update vis forces
-        lW_viscosity_dist = kernel.jlW_viscosity(dist)
+        lW_viscosity_dist = kernel.lW_viscosity(dist)
         fv = calculations.calculate_viscosity_force(self.pos, self.v, self.mass, d, self.viscosity, lW_viscosity_dist)
-        t5 = time.time()
+
 
         # Update acceleration, vel, pos 
         forces = fp + fv + fe
@@ -127,8 +128,9 @@ def simulate(n_particles=100,
              k=20, p0=1, 
              viscosity=0.2, 
              sz=(20, 80),
-             backend='jax',):
-    sim = SPHSimulation(n_particles=n_particles, dt=dt, num_steps=num_steps, k=k, p0=p0, viscosity=viscosity, sz=sz, backend=backend)
+             backend='jax',
+             device='cpu',):
+    sim = SPHSimulation(n_particles=n_particles, dt=dt, num_steps=num_steps, k=k, p0=p0, viscosity=viscosity, sz=sz, backend=backend, device=device)
     for t in track(range(num_steps)):
         sim.step()
     

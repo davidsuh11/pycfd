@@ -7,6 +7,7 @@ import jax
 import jax.numpy as jnp
 
 import torch 
+from . import operations
 
 h = 3
 d = 2 # 3D 
@@ -15,7 +16,8 @@ def W_poly6(r):
     if (type(r) == np.float64 or type(r) == float):
         r = np.array([r]) 
     C = 315 / (64 * np.pi * np.power(h, 9)) 
-    ret = C * np.power(h*h - r*r, 3) 
+
+    ret = C * operations.power(h*h - r*r, 3) 
     ret[r > h] = 0
 
     return ret
@@ -28,20 +30,17 @@ def dW_poly6(r):
 
 
 def dW_spiky(r): 
-    if (type(r) == np.float64): r = np.array([r]) 
  
     C = (15 / (np.pi * np.power(h, 6)))
     return np.divide(C * (-3) * ((h - r)**2), r, out=np.zeros_like(r),
                      where = np.logical_and(r>1e-15, r < h))
 
 def lW_viscosity(r): 
-    if (type(r) == np.float64): r = np.array([r]) 
     ret = (40 / (np.pi * (h**4))) * (1 - r / h) 
     ret[r < 1e-15] = 0 
     ret[r > h] = 0 
 
     return ret
-    #return C * (fpp + (d-1) * fpq) 
 
 
 def __jW_poly6(r):
@@ -74,7 +73,7 @@ def jlW_viscosity(r):
     return ret
 
 def tW_poly6(r):
-    r = torch.from_numpy(r)
+    #r = torch.from_numpy(r)
     C = 315 / (64 * np.pi * np.power(h, 9)) 
     ret = C * torch.pow(h*h - r*r, 3) 
     ret[r > h] = 0
