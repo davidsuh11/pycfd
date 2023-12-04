@@ -37,8 +37,8 @@ def dW_spiky(r):
 
 def lW_viscosity(r): 
     ret = (40 / (np.pi * (h**4))) * (1 - r / h) 
-    ret[r < 1e-15] = 0 
-    ret[r > h] = 0 
+    ret = np.where(r < 1e-15, 0, ret)
+    ret = np.where(r > h, 0, ret)
 
     return ret
 

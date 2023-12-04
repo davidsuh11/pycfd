@@ -39,10 +39,12 @@ class SPHSimulation:
         self.a = np.zeros_like(self.v)
         self.pos = np.random.rand(*self.v.shape) * 15 + kernel.h + 1
         self.output_dir = 'output'
+        self.backend = backend
+        
         calculations.BACKEND = backend
         operations.BACKEND = backend
-        self.backend = backend
         calculations.DEVICE = device
+        operations.DEVICE = device
         kernel.h = h
 
     def step(self):
