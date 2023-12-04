@@ -30,11 +30,20 @@ def cdist(x1, x2):
         ret = torch.cdist(x1, x2)
     return ret
 
+def zeros_like(x):
+    if BACKEND == 'jax':
+        return jnp.zeros_like(x)
+    elif BACKEND == 'torch':
+        device = torch.device(DEVICE)
+        return torch.zeros_like(x, device=device)
+    elif BACKEND == 'numpy':
+        return np.zeros_like(x)
+
 def where(cond, x, y):
     if type(x) == int or type(x) == float:
-        x = np.zeros_like(cond) + x
+        x = zeros_like(cond) + x
     if type(y) == int or type(y) == float:
-        y = np.zeros_like(cond) + y
+        y = zeros_like(cond) + y
     if BACKEND == 'jax':
         return jnp.where(cond, x, y)
     elif BACKEND == 'torch':
