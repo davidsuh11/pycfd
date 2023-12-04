@@ -48,5 +48,24 @@ python3 benchmark.py --n 1000 --ntrials 2 --backend torch --device cuda
 ```
 The shell scripts that run all variations of trials for the paper that I used are also included in the `benchmark/`.
 
+## Report
+The Project report is available as the report.pdf file. 
+
+## Executive Summary
+\* Taken from my paper
+
+Abstract. Executive Summary: SPH (Smoothed-particle Hydrodynamics) is a common method of simulating fluid move-
+ment, such as water. It is often more computationally efficient than Euclidean (grid) methods due to nearest-neighbor com-
+putations and simplification of the movement equations. The formulas that arise for SPH are ripe for paralleization and
+vectorization. Thus, it is of interest if the JAX and pytorch frameworks for python can be utilized to improve simulation per-
+formance. We implement a from-scratch version of SPH following the original paper by Mueller from 2003, which can take
+numpy, JAX, and pytorch as computational backends and perform benchmarking on a Apple Silicon M2, Nvidia V100 GPU,
+and Google TPUv4. Results show that contrary to projections, JAX was not very performant on the GPU (even worse than
+its CPU performance), while its TPU performance broken even with CPU. It was the best performer on the CPU, however.
+Pytorch on the GPU was extremely performant and showed advantages of framework maturity in the form of computational
+optimizations. Numpy as of course the slowest. These results point us to further research into what made JAX more perfor-
+mant on the CPU and perhaps implementing these optimizations piecewise into existing systems. It also further opens the
+gate for fluid simulations in e.g. game consoles and other edge devices that do not have access to strong GPU hardware.
+
 
 
