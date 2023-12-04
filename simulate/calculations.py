@@ -1,6 +1,6 @@
 import simulate.kernel as kernel
 import numpy as np 
-
+import scipy as sp
 import jax.numpy as jnp
 import jax
 
@@ -128,4 +128,19 @@ def calculate_density(distarr, mass):
 
 
     #return np.array(ret)
+
+def cdist(x1, x2):
+    device = torch.device(DEVICE)
+    if BACKEND == 'jax':
+        ret = jnp.array(sp.spatial.distance.cdist(x1, x2))
+    elif BACKEND == 'numpy':
+        ret = np.array(sp.spatial.distance.cdist(x1, x2))
+    elif BACKEND == 'torch':
+        x1, x2 = map(lambda x: torch.from_numpy(x) if type(x) == np.ndarray else x,
+                     (x1, x2))
+        x1, x2 = map(lambda x: x.to(device), (x1, x2))
+        ret = torch.from_numpy(torch.cdist(x1, x2))
+    return ret
+
+    #return np.array(ret
 
