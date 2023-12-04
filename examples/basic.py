@@ -22,6 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--steps-per-frame', type=int, default=10)
     parser.add_argument('--border-dims', type=int, nargs=2, default=[20, 80])
     parser.add_argument('--backend', type=str, default='jax')
+    parser.add_argument('--device', type=str, default='cpu')
     parser.add_argument('--h', type=float, default=3)
 
     args = parser.parse_args()
@@ -30,7 +31,8 @@ if __name__ == '__main__':
                         viscosity=args.viscosity, 
                         dt=args.dt, sz=args.border_dims, 
                         num_steps=args.steps,
-                        backend=args.backend,)
+                        backend=args.backend,
+                        device=args.device,)
 
 
 
