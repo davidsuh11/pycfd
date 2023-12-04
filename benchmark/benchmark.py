@@ -33,12 +33,12 @@ def benchmark_its(n=1000, n_steps = 1000, ntrials = 5, backend='jax', device='cp
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--n', type=int, default=1000)
-    parser.add_argument('--backend', type=str, default='jax')
-    parser.add_argument('--ntrials', type=int, default=5)
-    parser.add_argument('--device', type=str, default='cpu')
-    parser.add_argument('--nsteps', type=int, default=1000)
-    parser.add_argument('--verbose', action='store_true')
+    parser.add_argument('--n', type=int, default=1000, help='Number of particles')
+    parser.add_argument('--backend', type=str, default='jax', choices=['jax', 'torch', 'numpy'], help='Computational backend to use')
+    parser.add_argument('--ntrials', type=int, default=5, help='Number of trials to run')
+    parser.add_argument('--device', type=str, default='cpu', help='Device to run on (only for torch backend)')
+    parser.add_argument('--nsteps', type=int, default=1000, help='Number of steps to run per trial')
+    parser.add_argument('--verbose', action='store_true', help='Verbose results')
 
     args = parser.parse_args()
     VERBOSE = args.verbose
