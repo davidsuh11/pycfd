@@ -7,7 +7,7 @@ import jax
 import jax.numpy as jnp
 
 import torch 
-from . import operations
+from . import operations as ops
 
 h = 3
 d = 2 # 3D 
@@ -33,15 +33,15 @@ def dW_spiky(r):
  
     C = (15 / (np.pi * np.power(h, 6)))
     ret = C * (-3) * ((h - r)**2) / r
-    ret = np.where(r > h, 0, ret)
-    ret = np.where(r < 1e-15, 0, ret)
+    ret = ops.where(r > h, 0, ret)
+    ret = ops.where(r < 1e-15, 0, ret)
 
     return ret
 
 def lW_viscosity(r): 
     ret = (40 / (np.pi * (h**4))) * (1 - r / h) 
-    ret = np.where(r < 1e-15, 0, ret)
-    ret = np.where(r > h, 0, ret)
+    ret = ops.where(r < 1e-15, 0, ret)
+    ret = ops.where(r > h, 0, ret)
 
     return ret
 

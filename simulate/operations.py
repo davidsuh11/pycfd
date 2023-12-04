@@ -29,3 +29,17 @@ def cdist(x1, x2):
         x1, x2 = map(lambda x: x.to(device), utils.np2tensor(x1, x2))
         ret = torch.cdist(x1, x2)
     return ret
+
+def where(cond, x, y):
+    if type(x) == int or type(x) == float:
+        x = np.zeros_like(cond) + x
+    if type(y) == int or type(y) == float:
+        y = np.zeros_like(cond) + y
+    if BACKEND == 'jax':
+        return jnp.where(cond, x, y)
+    elif BACKEND == 'torch':
+        device = torch.device(DEVICE)
+        cond, x, y = map(lambda x: x.to(device), utils.np2tensor(cond, x, y))
+        return torch.where(cond, x, y)
+    elif BACKEND == 'numpy':
+        return np.where(cond, x, y)

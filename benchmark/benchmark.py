@@ -26,7 +26,7 @@ def benchmark_its(n=1000, n_steps = 1000, ntrials = 5, backend='jax', device='cp
         sm += t1 - t0
     if VERBOSE:
         print(f"RESULTS: (backend={backend}, device={device}, n={n}, n_steps={n_steps}, ntrials={ntrials})")
-        print(f'Average time for {n} steps: {sm / ntrials:.3f}s')
+        print(f'Average time for {n_steps} steps: {sm / ntrials:.3f}s')
         print(f'Average its/s: {n_steps * ntrials / sm:.3f}')
     else:
         print(f'{sm / ntrials:.3f}')

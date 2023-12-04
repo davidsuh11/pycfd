@@ -18,6 +18,8 @@ import jax
 
 import torch
 
+from . import operations 
+
 BACKEND = 'jax'
 DEVICE = 'cpu'
 
