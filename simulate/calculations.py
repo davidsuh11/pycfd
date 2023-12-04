@@ -1,3 +1,15 @@
+"""
+Contains all vector calculations for calculating the forces in the simulation. 
+
+There are 3 main calculations:
+    - Pressure force
+    - Viscosity force
+    - Density
+In particular, the pressure and viscosity forces are calculated using the vmap functions of JAX and torch. The numpy version
+is also included for comparison, and is a simple for loop. 
+"""
+
+
 import simulate.kernel as kernel
 import numpy as np 
 import scipy as sp

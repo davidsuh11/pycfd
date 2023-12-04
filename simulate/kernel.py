@@ -32,8 +32,11 @@ def dW_poly6(r):
 def dW_spiky(r): 
  
     C = (15 / (np.pi * np.power(h, 6)))
-    return np.divide(C * (-3) * ((h - r)**2), r, out=np.zeros_like(r),
-                     where = np.logical_and(r>1e-15, r < h))
+    ret = C * (-3) * ((h - r)**2) / r
+    ret = np.where(r > h, 0, ret)
+    ret = np.where(r < 1e-15, 0, ret)
+
+    return ret
 
 def lW_viscosity(r): 
     ret = (40 / (np.pi * (h**4))) * (1 - r / h) 
