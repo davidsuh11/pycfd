@@ -48,6 +48,8 @@ python3 benchmark.py --n 1000 --ntrials 2 --backend torch --device cuda
 ```
 The shell scripts that run all variations of trials for the paper that I used are also included in the `benchmark/`.
 
+## Sample Videos
+Sample videos of some simulations are available in the `samples/` directory. 
 ## Report
 The Project report is available as the `report.pdf` file. The slides used in class are available as `class_slides.pdf`.
 
